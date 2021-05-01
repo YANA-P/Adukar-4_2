@@ -1,5 +1,6 @@
 package by.adukar.telegrambot;
 
+import by.adukar.telegrambot.buttons.inline.InlineButtons;
 import by.adukar.telegrambot.buttons.reply.ReplyButtons;
 import by.adukar.telegrambot.consts.Commands;
 import by.adukar.telegrambot.consts.Paths;
@@ -12,6 +13,7 @@ import lombok.SneakyThrows;
 import org.telegram.telegrambots.api.methods.send.*;
 import org.telegram.telegrambots.api.objects.Message;
 import org.telegram.telegrambots.api.objects.Update;
+import org.telegram.telegrambots.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
@@ -20,6 +22,7 @@ import org.telegram.telegrambots.exceptions.TelegramApiException;
 public class Bot extends TelegramLongPollingBot {
 
     ReplyButtons replyButtons = new ReplyButtons();
+    InlineButtons inlineButtons = new InlineButtons();
 
     UserService userService = new UserService();
     TextService textService = new TextService();
@@ -32,6 +35,75 @@ public class Bot extends TelegramLongPollingBot {
 
     @SneakyThrows
     public void sendAnswerFromBot(Update update){
+        if(update.hasCallbackQuery()) {
+            switch (update.getCallbackQuery().getData()) {
+                case "Apple": {
+                    sendMsgWithPhoto("Яблоко, 1.50 руб","https://www.google.com/url?sa=i&url=https%3A%2F%2Fprostye-retsepty.com%2Fzelenyie-yabloki-polza-ili-vred%2F&psig=AOvVaw33X6tqUAkwR-a87VPvNjZX&ust=1619945639429000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCMiNn8GXqPACFQAAAAAdAAAAABAD",  update.getCallbackQuery().getFrom().getId().longValue());
+                    break;
+                }
+                case "Xypma":
+                {
+                    sendMsgWithPhoto("Хурма, 2 руб", "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.marieclaire.ru%2Ffood%2Ffoto-gid-po-hurme-kakaya-vyajet-kakaya-net-polza-i-vred-i-daje-3-retsepta-%2F&psig=AOvVaw3bayMdALkHdGSC27APUqau&ust=1619949793978000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCPD4ub6dqPACFQAAAAAdAAAAABAE", update.getCallbackQuery().getFrom().getId().longValue());
+                    break;
+
+                }
+                case "Strawberry": {
+                    sendMsgWithPhoto("Клубника, 2руб", "", update.getCallbackQuery().getFrom().getId().longValue());
+                    break;
+                }
+                case "Cherry": {
+                    sendMsg("Вишня, 2 руб", update.getCallbackQuery().getFrom().getId().longValue());
+                    break;
+                }
+                case "Smorodina": {
+                    sendMsg("Смородина, 2 руб", update.getCallbackQuery().getFrom().getId().longValue());
+                    break;
+                }
+                case "Malina": {
+                    sendMsg("Малина, 2 руб", update.getCallbackQuery().getFrom().getId().longValue());
+                    break;
+                }
+                case "Grysha": {
+                    sendMsg("Груша, 1.70 руб", update.getCallbackQuery().getFrom().getId().longValue());
+                    break;
+                }
+                case "Vinograd": {
+                    sendMsg("Виноград, 2 руб", update.getCallbackQuery().getFrom().getId().longValue());
+                    break;
+                }
+                case "Limon": {
+                    sendMsg("Лимон, 2 руб", update.getCallbackQuery().getFrom().getId().longValue());
+                    break;
+                }
+                case "Orange": {
+                    sendMsg("Апельсин, 2 руб", update.getCallbackQuery().getFrom().getId().longValue());
+                    break;
+                }
+                case "Kokoc": {
+                    sendMsg("Кокос, 1.60 руб", update.getCallbackQuery().getFrom().getId().longValue());
+                    break;
+                }
+                case "Mandarin": {
+                    sendMsg(" Мандарин, 2 руб", update.getCallbackQuery().getFrom().getId().longValue());
+                    break;
+                }
+                case "Red smorodina": {
+                    sendMsg("Красная смородина, 2 руб", update.getCallbackQuery().getFrom().getId().longValue());
+                    break;
+                }
+                case "Banana": {
+                    sendMsg("Банан, 2 руб", update.getCallbackQuery().getFrom().getId().longValue());
+                    break;
+                }
+                case "Ananas": {
+                    sendMsg("Ананас, 2 руб", update.getCallbackQuery().getFrom().getId().longValue());
+                    break;
+                }
+                default:
+                    sendContact( update.getCallbackQuery().getFrom().getId().longValue());
+                    break;
+            }
+        }
         Long chatId = update.getMessage().getChatId();
         switch (update.getMessage().getText()){
             case Commands.START:{
@@ -41,7 +113,9 @@ public class Bot extends TelegramLongPollingBot {
                 break;
             }
             case Commands.COLORS: {
-                sendMsg(Color.RED.getCode(), chatId);
+                for (int i = 1; i <= 15; i++) {
+                    sendMsgWithButtons( inlineButtons.keyboardMarkupForSelectStudentOrTeacher(textService.getPropValues(Paths.PHOTOS_URLS_PATH, "text.fruit." + i))," товар",chatId);
+                }
                 break;
             }
             case Commands.BUTTONS:{
@@ -61,6 +135,18 @@ public class Bot extends TelegramLongPollingBot {
                 sendContact(chatId);
                 break;
             }
+        }
+    }
+
+    private void sendMsgWithPhoto(String message, String url, long chatId) {
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(chatId);
+        sendMessage.setText(message);
+        try {
+            execute(sendMessage);
+            sendPhoto(url, chatId);
+        } catch (TelegramApiException e) {
+            System.out.println( "Exception: " + e.toString());
         }
     }
 
@@ -124,6 +210,18 @@ public class Bot extends TelegramLongPollingBot {
         }
     }
 
+    public synchronized void sendMsgWithButtons(InlineKeyboardMarkup inlineKeyboardMarkup, String message, Long chatId) {
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(chatId);
+        sendMessage.setText(message);
+        sendMessage.setReplyMarkup(inlineKeyboardMarkup);
+        try {
+            execute(sendMessage);
+        } catch (TelegramApiException e) {
+            System.out.println( "Exception: " + e.toString());
+        }
+    }
+
     public synchronized void sendMsgWithButtons(String message, ReplyKeyboardMarkup replyKeyboardMarkup, Long chatId) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
@@ -146,4 +244,7 @@ public class Bot extends TelegramLongPollingBot {
     public String getBotToken() {
         return "1754781115:AAHF3WLgmlvP38dLV09X0KA6honHtX9_O9o";
     }
-}
+
+    }
+
+

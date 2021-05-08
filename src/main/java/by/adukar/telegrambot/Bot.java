@@ -40,6 +40,7 @@ public class Bot extends TelegramLongPollingBot {
     public void sendAnswerFromBot(Update update){
       if(admins.contains(update.getMessage().getFrom().getId().longValue())){
           sendMsg("you admin",update.getMessage().getFrom().getId().longValue() );
+          sendMsgWithButtons("Удалить/добавить товар", replyButtons.keyboardMarkup("Add", "Delete"), update.getMessage().getFrom().getId().longValue());
       }else {
           if (update.hasCallbackQuery()) {
               switch (update.getCallbackQuery().getData()) {
@@ -234,6 +235,7 @@ public class Bot extends TelegramLongPollingBot {
         }
     }
 
+
     public synchronized void sendMsgWithButtons(InlineKeyboardMarkup inlineKeyboardMarkup, String message, Long chatId) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
@@ -257,7 +259,6 @@ public class Bot extends TelegramLongPollingBot {
             System.out.println( "Exception: " + e.toString());
         }
     }
-
 
     @Override
     public String getBotUsername() {

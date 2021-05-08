@@ -32,4 +32,23 @@ public class ReplyButtons {
         return keyboardMarkup;
 
     }
+
+    public ReplyKeyboardMarkup keyboardMarkup(String text1, String text2) {
+
+        ArrayList<KeyboardRow> keyboard = new ArrayList<>();
+        KeyboardRow keyboardFirstRow = new KeyboardRow();
+
+        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
+        keyboardMarkup.setSelective(true);
+        keyboardMarkup.setResizeKeyboard(true);
+        keyboardMarkup.setOneTimeKeyboard(false);
+
+        keyboardFirstRow.add(text1);
+        keyboardFirstRow.add(text2);
+
+        keyboard.add(keyboardFirstRow);
+        keyboardMarkup.setKeyboard(keyboard);
+        return keyboardMarkup;
+
+    }
 }

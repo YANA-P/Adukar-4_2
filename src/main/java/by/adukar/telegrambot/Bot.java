@@ -58,7 +58,7 @@ public class Bot extends TelegramLongPollingBot {
               Long chatId = update.getMessage().getChatId();
               switch (update.getMessage().getText()) {
                   case Commands.START: {
-                      userService.addUserToList(userService.createUserFromUpdate(update));
+                      database.insertUser(chatId, update.getMessage().getFrom().getFirstName(), update.getMessage().getFrom().getLastName(), "User");;
                       sendMsg(textService.getPropValues(Paths.HELLO_STRING_PATH, Text.SAY_HELLO_PROPERTY), chatId);
                       sendPhoto(textService.getPropValues(Paths.PHOTOS_URLS_PATH, Photos.HELLO_PHOTO_PATH), chatId);
                       break;

@@ -12,6 +12,8 @@ import static java.sql.DriverManager.getConnection;
 
 public class Database {
 
+    public static final String INSERT_INTO_USERS = "INSERT INTO users (Id, name, LastName, Role) values('%s','%s', '%s', '%s');";
+
 
     @SneakyThrows
     public List<String> getListOfGoodsName() {
@@ -25,6 +27,12 @@ public class Database {
         statement.getConnection().commit();
         statement.getConnection().close();
         return listOfId;
+    }
+
+    @SneakyThrows
+    public void insertUser (long id, String name, String LastName, String Role) {
+        Statement statement = createStatementFromConnection(connect());
+        sendRequest(String.format(INSERT_INTO_USERS, id, name, LastName, Role), statement);
     }
 
     @SneakyThrows

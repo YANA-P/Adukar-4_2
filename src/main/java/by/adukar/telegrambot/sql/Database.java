@@ -12,7 +12,7 @@ import static java.sql.DriverManager.getConnection;
 
 public class Database {
 
-    public static final String INSERT_INTO_USERS = "INSERT INTO users (Id, name, LastName, Role) values('%s','%s', '%s', '%s');";
+    public static final String INSERT_INTO_USERS = "INSERT INTO users (id, name, LastName, Role) values('%s','%s', '%s', '%s');";
 
 
     @SneakyThrows

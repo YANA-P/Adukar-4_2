@@ -22,4 +22,27 @@ public class InlineButtons {
         inlineKeyboardMarkup.setKeyboard(listKeyboard);
         return inlineKeyboardMarkup;
     }
+
+
+    @SneakyThrows
+    public InlineKeyboardMarkup keyboardMarkupForGoods(List<String>  stringList) {
+        List<List<InlineKeyboardButton>> listKeyboard = new ArrayList<>();
+
+
+        for (int i = 0; i < stringList.size(); i++) {
+            List<InlineKeyboardButton> buttonsList = new ArrayList<>();
+            InlineKeyboardButton keyboardButton = new InlineKeyboardButton();
+
+            keyboardButton.setCallbackData(stringList.get(i));
+            keyboardButton.setText(stringList.get(i));
+
+            buttonsList.add(keyboardButton);
+            listKeyboard.add(buttonsList);
+        }
+
+
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        inlineKeyboardMarkup.setKeyboard(listKeyboard);
+        return inlineKeyboardMarkup;
+    }
 }

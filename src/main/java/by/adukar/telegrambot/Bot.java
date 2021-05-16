@@ -31,7 +31,9 @@ public class Bot extends TelegramLongPollingBot {
     TextService textService = new TextService();
 
     Database database = new Database();
-    List<Long> admins = List.of(993627642L);
+    List<Long> admins = List.of(9930627642L);
+
+    static int startCount = 0;
 
     @Override
     @SneakyThrows
@@ -40,52 +42,91 @@ public class Bot extends TelegramLongPollingBot {
     }
 
     @SneakyThrows
-    public void sendAnswerFromBot(Update update){
-//      if(admins.contains(update.getMessage().getFrom().getId().longValue())){
-//          sendMsg("you admin",update.getMessage().getFrom().getId().longValue() );
-//          sendMsgWithButtons("Удалить/добавить товар", replyButtons.keyboardMarkup("Add", "Delete"), update.getMessage().getFrom().getId().longValue());
-//      }else {
-          if (update.hasCallbackQuery()) {
-              Long chatIdFromCallBack = Long.valueOf(update.getCallbackQuery().getFrom().getId());
-              List<String> goodsList = database.getListOfGoodsName();
-              String data = update.getCallbackQuery().getData();
-              if(goodsList.contains(data)){
-                  int indexOfGoods = goodsList.indexOf(data);
-                  sendMsgWithPhoto(database.getCurrentValue("name",indexOfGoods), database.getCurrentValue("url",indexOfGoods), chatIdFromCallBack);
-                  sendMsgWithButtons(inlineButtons.keyboardMarkupForSelectStudentOrTeacher("Buy"), "Добавить в корзину?", chatIdFromCallBack);
-              }
-          }else {
-              Long chatId = update.getMessage().getChatId();
-              switch (update.getMessage().getText()) {
-                  case Commands.START: {
-                      database.insertUser(chatId, update.getMessage().getFrom().getFirstName(), update.getMessage().getFrom().getLastName(), "User");;
-                      sendMsg(textService.getPropValues(Paths.HELLO_STRING_PATH, Text.SAY_HELLO_PROPERTY), chatId);
-                      sendPhoto(textService.getPropValues(Paths.PHOTOS_URLS_PATH, Photos.HELLO_PHOTO_PATH), chatId);
-                      break;
-                  }
-                  case Commands.MENU: {
-                          sendMsgWithButtons(inlineButtons.keyboardMarkupForGoods(database.getListOfGoodsName()), "Товары", chatId);
-                      break;
-                  }
-                  case Commands.BUTTONS: {
-                      sendMsgWithButtons("Сделайте выбор:", replyButtons.keyboardMarkupForSelectStudentOrTeacher(), chatId);
-                      break;
-                  }
-                  case Commands.USERS: {
-                      sendMsg(userService.getAllUser(), chatId);
-                      break;
-                  }
-                  case Commands.LOCATION: {
-                      sendLocation(chatId);
-                      break;
-                  }
-                  default: {
-                      sendMsg("Write admin to get help @yqpuss", chatId);
-                      sendContact(chatId);
-                      break;
-                  }
-              }
-          }
+    public void sendAnswerFromBot(Update update) {
+
+        if (admins.contains(update.getMessage().getFrom().getId().longValue())) {
+            Long chatIdAdmin = update.getMessage().getChatId();
+            if(startCount == 0) {
+                sendMsg("you admin", update.getMessage().getFrom().getId().longValue());
+                sendMsgWithButtons("Добавить/Удалить/Редактировать/УдалитьПользователя", replyButtons.keyboardMarkupFor4("Add", "Delete", "Edit", "DeleteUser"), update.getMessage().getFrom().getId().longValue());
+                startCount++;
+            }
+            if (update.getMessage().getText().equals("Delete"))
+
+            {
+                sendMsg("Какой товар хотите удалить?\n Пример ввода: delete_НазваниеТовара ", chatIdAdmin );
+            }
+            if (update.getMessage().getText().startsWith("delete_")){
+                String name = update.getMessage().getText().substring(7);
+                database.deleteGoods(name);
+                sendMsg("Успешно удалено", chatIdAdmin);
+
+            }
+            if (update.getMessage().getText().equals("DeleteUser"))
+            {
+                sendMsg("Какого пользователя хотите удалить?\n Пример ввода: deleteuser_ИмяПользователя ", chatIdAdmin );
+            }
+            if (update.getMessage().getText().startsWith("deleteuser_")){
+                String name = update.getMessage().getText().substring(7);
+                database.deleteGoods(name);
+                sendMsg("Успешно удалён", chatIdAdmin);
+            }
+          //  if (update.getMessage().getText().equals("Add"))
+           // {
+            //    sendMsg("Какой товар хотите добавить?\n Пример ввода: add_name_имяТовара ", chatIdAdmin );
+           // }
+          //  if (update.getMessage().getText().startsWith("add_"))
+          //  {
+            //    List<String> goodsList = database.getListOfGoodsName();
+            //    Integer id = goodsList.size() + 1;
+            //    String name = update.getMessage().getText().s;
+             //   database.insertGoods(id, name, description, url, costs);
+              //  sendMsg("Успешно добавлено", chatIdAdmin);
+           // }
+
+        }
+        if (update.hasCallbackQuery()) {
+            Long chatIdFromCallBack = Long.valueOf(update.getCallbackQuery().getFrom().getId());
+            List<String> goodsList = database.getListOfGoodsName();
+            String data = update.getCallbackQuery().getData();
+            if (goodsList.contains(data)) {
+                int indexOfGoods = goodsList.indexOf(data);
+                sendMsgWithPhoto(database.getCurrentValue("name", indexOfGoods), database.getCurrentValue("url", indexOfGoods), chatIdFromCallBack);
+                sendMsgWithButtons(inlineButtons.keyboardMarkupForSelectStudentOrTeacher("Buy"), "Добавить в корзину?", chatIdFromCallBack);
+            }
+        } else {
+            Long chatId = update.getMessage().getChatId();
+            switch (update.getMessage().getText()) {
+                case Commands.START: {
+                    database.insertUser(chatId, update.getMessage().getFrom().getFirstName(), update.getMessage().getFrom().getLastName(), "User");
+
+                    sendMsg(textService.getPropValues(Paths.HELLO_STRING_PATH, Text.SAY_HELLO_PROPERTY), chatId);
+                    sendPhoto(textService.getPropValues(Paths.PHOTOS_URLS_PATH, Photos.HELLO_PHOTO_PATH), chatId);
+                    break;
+                }
+                case Commands.MENU: {
+                    sendMsgWithButtons(inlineButtons.keyboardMarkupForGoods(database.getListOfGoodsName()), "Товары", chatId);
+                    break;
+                }
+                case Commands.BUTTONS: {
+                    sendMsgWithButtons("Сделайте выбор:", replyButtons.keyboardMarkupForSelectStudentOrTeacher(), chatId);
+                    break;
+                }
+                case Commands.USERS: {
+                    sendMsg(userService.getAllUser(), chatId);
+                    break;
+                }
+                case Commands.LOCATION: {
+                    sendLocation(chatId);
+                    break;
+                }
+                default: {
+                    sendMsg("Write admin to get help @yqpuss", chatId);
+                    sendContact(chatId);
+                    break;
+                }
+            }
+        }
     }
 
     private void sendMsgWithPhoto(String message, String url, long chatId) {
@@ -96,7 +137,7 @@ public class Bot extends TelegramLongPollingBot {
             execute(sendMessage);
             sendPhoto(url, chatId);
         } catch (TelegramApiException e) {
-            System.out.println( "Exception: " + e.toString());
+            System.out.println("Exception: " + e.toString());
         }
     }
 
@@ -107,20 +148,20 @@ public class Bot extends TelegramLongPollingBot {
         try {
             execute(sendMessage);
         } catch (TelegramApiException e) {
-            System.out.println( "Exception: " + e.toString());
+            System.out.println("Exception: " + e.toString());
         }
     }
 
     public synchronized void sendContact(Long chatId) {
         SendContact sendContact = new SendContact();
-        sendContact.setPhoneNumber("+375447357152");
-        sendContact.setFirstName("Anton");
-        sendContact.setLastName("Kupreichik");
+        sendContact.setPhoneNumber("+375296985989");
+        sendContact.setFirstName("Yana");
+        sendContact.setLastName("Pisarenko");
         sendContact.setChatId(chatId);
         try {
             execute(sendContact);
         } catch (TelegramApiException e) {
-            System.out.println( "Exception: " + e.toString());
+            System.out.println("Exception: " + e.toString());
         }
     }
 
@@ -136,7 +177,7 @@ public class Bot extends TelegramLongPollingBot {
         }
     }*/
 
-    public synchronized void sendLocation(Long chatId){
+    public synchronized void sendLocation(Long chatId) {
         SendLocation sendLocation = new SendLocation();
         sendLocation.setChatId(chatId);
         sendLocation.setLatitude(Float.valueOf("-33.830693"));
@@ -145,7 +186,7 @@ public class Bot extends TelegramLongPollingBot {
         try {
             execute(sendLocation);
         } catch (TelegramApiException e) {
-            System.out.println( "Exception: " + e.toString());
+            System.out.println("Exception: " + e.toString());
         }
     }
 
@@ -169,7 +210,7 @@ public class Bot extends TelegramLongPollingBot {
         try {
             execute(sendMessage);
         } catch (TelegramApiException e) {
-            System.out.println( "Exception: " + e.toString());
+            System.out.println("Exception: " + e.toString());
         }
     }
 
@@ -181,7 +222,18 @@ public class Bot extends TelegramLongPollingBot {
         try {
             execute(sendMessage);
         } catch (TelegramApiException e) {
-            System.out.println( "Exception: " + e.toString());
+            System.out.println("Exception: " + e.toString());
+        }
+    }
+
+    public synchronized void sendButtons(ReplyKeyboardMarkup replyKeyboardMarkup, Long chatId) {
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(chatId);
+        sendMessage.setReplyMarkup(replyKeyboardMarkup);
+        try {
+            execute(sendMessage);
+        } catch (TelegramApiException e) {
+            System.out.println("Exception: " + e.toString());
         }
     }
 
@@ -195,6 +247,6 @@ public class Bot extends TelegramLongPollingBot {
         return "1754781115:AAHF3WLgmlvP38dLV09X0KA6honHtX9_O9o";
     }
 
-    }
+}
 
 

@@ -13,8 +13,9 @@ import static java.sql.DriverManager.getConnection;
 public class Database {
 
     public static final String INSERT_INTO_USERS = "INSERT INTO users (id, name, LastName, Role) values('%s','%s', '%s', '%s');";
-
-
+    public static final String INSERT_INTO_GOODS = "INSERT INTO goods (id, name, description, url, costs) values('%s','%s', '%s', '%s', '%s');";
+    public static final String DELETE_FROM_GOODS = "DELETE FROM goods WHERE name = '%s';";
+    public static final String DELETE_FROM_USERS = "DELETE FROM users WHERE name = '%s';";
     @SneakyThrows
     public List<String> getListOfGoodsName() {
         List<String> listOfId = new ArrayList<>();
@@ -33,6 +34,23 @@ public class Database {
     public void insertUser (long id, String name, String LastName, String Role) {
         Statement statement = createStatementFromConnection(connect());
         sendRequest(String.format(INSERT_INTO_USERS, id, name, LastName, Role), statement);
+    }
+
+    public void deleteUser (String name) {
+        Statement statement = createStatementFromConnection(connect());
+        sendRequest(String.format(DELETE_FROM_USERS, name), statement);
+    }
+
+    @SneakyThrows
+    public void insertGoods (long id, String name, String description, String url, Integer costs) {
+        Statement statement = createStatementFromConnection(connect());
+        sendRequest(String.format(INSERT_INTO_GOODS, id, name, description, url, costs), statement);
+    }
+
+    @SneakyThrows
+    public void deleteGoods (String name) {
+        Statement statement = createStatementFromConnection(connect());
+        sendRequest(String.format(DELETE_FROM_GOODS, name), statement);
     }
 
     @SneakyThrows

@@ -31,7 +31,7 @@ public class Bot extends TelegramLongPollingBot {
     TextService textService = new TextService();
 
     Database database = new Database();
-    List<Long> admins = List.of(9930627642L);
+    List<Long> admins = List.of(9936027642L);
 
     static int startCount = 0;
 
@@ -43,48 +43,6 @@ public class Bot extends TelegramLongPollingBot {
 
     @SneakyThrows
     public void sendAnswerFromBot(Update update) {
-
-        if (admins.contains(update.getMessage().getFrom().getId().longValue())) {
-            Long chatIdAdmin = update.getMessage().getChatId();
-            if(startCount == 0) {
-                sendMsg("you admin", update.getMessage().getFrom().getId().longValue());
-                sendMsgWithButtons("Добавить/Удалить/Редактировать/УдалитьПользователя", replyButtons.keyboardMarkupFor4("Add", "Delete", "Edit", "DeleteUser"), update.getMessage().getFrom().getId().longValue());
-                startCount++;
-            }
-            if (update.getMessage().getText().equals("Delete"))
-
-            {
-                sendMsg("Какой товар хотите удалить?\n Пример ввода: delete_НазваниеТовара ", chatIdAdmin );
-            }
-            if (update.getMessage().getText().startsWith("delete_")){
-                String name = update.getMessage().getText().substring(7);
-                database.deleteGoods(name);
-                sendMsg("Успешно удалено", chatIdAdmin);
-
-            }
-            if (update.getMessage().getText().equals("DeleteUser"))
-            {
-                sendMsg("Какого пользователя хотите удалить?\n Пример ввода: deleteuser_ИмяПользователя ", chatIdAdmin );
-            }
-            if (update.getMessage().getText().startsWith("deleteuser_")){
-                String name = update.getMessage().getText().substring(7);
-                database.deleteGoods(name);
-                sendMsg("Успешно удалён", chatIdAdmin);
-            }
-          //  if (update.getMessage().getText().equals("Add"))
-           // {
-            //    sendMsg("Какой товар хотите добавить?\n Пример ввода: add_name_имяТовара ", chatIdAdmin );
-           // }
-          //  if (update.getMessage().getText().startsWith("add_"))
-          //  {
-            //    List<String> goodsList = database.getListOfGoodsName();
-            //    Integer id = goodsList.size() + 1;
-            //    String name = update.getMessage().getText().s;
-             //   database.insertGoods(id, name, description, url, costs);
-              //  sendMsg("Успешно добавлено", chatIdAdmin);
-           // }
-
-        }
         if (update.hasCallbackQuery()) {
             Long chatIdFromCallBack = Long.valueOf(update.getCallbackQuery().getFrom().getId());
             List<String> goodsList = database.getListOfGoodsName();
@@ -94,7 +52,38 @@ public class Bot extends TelegramLongPollingBot {
                 sendMsgWithPhoto(database.getCurrentValue("name", indexOfGoods), database.getCurrentValue("url", indexOfGoods), chatIdFromCallBack);
                 sendMsgWithButtons(inlineButtons.keyboardMarkupForSelectStudentOrTeacher("Buy"), "Добавить в корзину?", chatIdFromCallBack);
             }
-        } else {
+        }
+        else {
+            if (admins.contains(update.getMessage().getFrom().getId().longValue())) {
+                Long chatIdAdmin = update.getMessage().getChatId();
+                if(startCount == 0) {
+                    sendMsg("you admin", update.getMessage().getFrom().getId().longValue());
+                    sendMsgWithButtons("Добавить/Удалить/Редактировать/УдалитьПользователя", replyButtons.keyboardMarkupFor4("Add", "Delete", "Edit", "DeleteUser"), update.getMessage().getFrom().getId().longValue());
+                    startCount++;
+                }
+                if (update.getMessage().getText().equals("Delete"))
+
+                {
+                    sendMsg("Какой товар хотите удалить?\n Пример ввода: delete_НазваниеТовара ", chatIdAdmin );
+                }
+                if (update.getMessage().getText().startsWith("delete_")){
+                    String name = update.getMessage().getText().substring(7);
+                    database.deleteGoods(name);
+                    sendMsg("Успешно удалено", chatIdAdmin);
+
+                }
+                if (update.getMessage().getText().equals("DeleteUser"))
+                {
+                    sendMsg("Какого пользователя хотите удалить?\n Пример ввода: deleteuser_ИмяПользователя ", chatIdAdmin );
+                }
+                if (update.getMessage().getText().startsWith("deleteuser_")){
+                    String name = update.getMessage().getText().substring(7);
+                    database.deleteGoods(name);
+                    sendMsg("Успешно удалён", chatIdAdmin);
+                }
+            }
+
+
             Long chatId = update.getMessage().getChatId();
             switch (update.getMessage().getText()) {
                 case Commands.START: {

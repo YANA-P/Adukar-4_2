@@ -31,7 +31,7 @@ public class Bot extends TelegramLongPollingBot {
     TextService textService = new TextService();
 
     Database database = new Database();
-    List<Long> admins = List.of(9936027642L);
+    List<Long> admins = List.of(993627642L);
 
     static int startCount = 0;
 
@@ -48,7 +48,8 @@ public class Bot extends TelegramLongPollingBot {
             List<String> goodsList = database.getListOfGoodsName();
             String data = update.getCallbackQuery().getData();
             if (goodsList.contains(data)) {
-                int indexOfGoods = goodsList.indexOf(data);
+                int indexOfGoods = 0;
+                indexOfGoods = goodsList.indexOf(data);
                 sendMsgWithPhoto(database.getCurrentValue("name", indexOfGoods), database.getCurrentValue("url", indexOfGoods), chatIdFromCallBack);
                 sendMsgWithButtons(inlineButtons.keyboardMarkupForSelectStudentOrTeacher("Buy"), "Добавить в корзину?", chatIdFromCallBack);
             }
@@ -58,7 +59,7 @@ public class Bot extends TelegramLongPollingBot {
                 Long chatIdAdmin = update.getMessage().getChatId();
                 if(startCount == 0) {
                     sendMsg("you admin", update.getMessage().getFrom().getId().longValue());
-                    sendMsgWithButtons("Добавить/Удалить/Редактировать/УдалитьПользователя", replyButtons.keyboardMarkupFor4("Add", "Delete", "Edit", "DeleteUser"), update.getMessage().getFrom().getId().longValue());
+                    sendMsgWithButtons("Добавить/Удалить/УдалитьПользователя", replyButtons.keyboardMarkupFor3("Add", "Delete", "DeleteUser"), update.getMessage().getFrom().getId().longValue());
                     startCount++;
                 }
                 if (update.getMessage().getText().equals("Delete"))
@@ -81,6 +82,17 @@ public class Bot extends TelegramLongPollingBot {
                     database.deleteGoods(name);
                     sendMsg("Успешно удалён", chatIdAdmin);
                 }
+               // if (update.getMessage().getText().equals("Add"))
+
+               // {
+               //     sendMsg("Какой товар хотите добавить?\n Пример ввода: add_idТовара,ИмяТовара,ОписаниеТовара,urlТовара,ценаТовара", chatIdAdmin );
+               // }
+               // if (update.getMessage().getText().startsWith("add_")){
+               //     String name = update.getMessage().getText().substring(7);
+               //     database.insertGoods(id, name, description, url, costs);
+                //    sendMsg("Успешно добавлено", chatIdAdmin);
+
+              //  }
             }
 
 

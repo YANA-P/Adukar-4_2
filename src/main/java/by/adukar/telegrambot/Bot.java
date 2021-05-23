@@ -59,7 +59,7 @@ public class Bot extends TelegramLongPollingBot {
                 Long chatIdAdmin = update.getMessage().getChatId();
                 if(startCount == 0) {
                     sendMsg("you admin", update.getMessage().getFrom().getId().longValue());
-                    sendMsgWithButtons("Добавить/Удалить/УдалитьПользователя", replyButtons.keyboardMarkupFor3("Add", "Delete", "DeleteUser"), update.getMessage().getFrom().getId().longValue());
+                    sendMsgWithButtons("Удалить/УдалитьПользователя", replyButtons.keyboardMarkupFor2( "Delete", "DeleteUser"), update.getMessage().getFrom().getId().longValue());
                     startCount++;
                 }
                 if (update.getMessage().getText().equals("Delete"))
@@ -82,24 +82,15 @@ public class Bot extends TelegramLongPollingBot {
                     database.deleteGoods(name);
                     sendMsg("Успешно удалён", chatIdAdmin);
                 }
-               // if (update.getMessage().getText().equals("Add"))
 
-               // {
-               //     sendMsg("Какой товар хотите добавить?\n Пример ввода: add_idТовара,ИмяТовара,ОписаниеТовара,urlТовара,ценаТовара", chatIdAdmin );
-               // }
-               // if (update.getMessage().getText().startsWith("add_")){
-               //     String name = update.getMessage().getText().substring(7);
-               //     database.insertGoods(id, name, description, url, costs);
-                //    sendMsg("Успешно добавлено", chatIdAdmin);
-
-              //  }
+                }
             }
 
 
             Long chatId = update.getMessage().getChatId();
             switch (update.getMessage().getText()) {
                 case Commands.START: {
-                    database.insertUser(chatId, update.getMessage().getFrom().getFirstName(), update.getMessage().getFrom().getLastName(), "User");
+                    //database.insertUser(chatId, update.getMessage().getFrom().getFirstName(), update.getMessage().getFrom().getLastName(), "User");
 
                     sendMsg(textService.getPropValues(Paths.HELLO_STRING_PATH, Text.SAY_HELLO_PROPERTY), chatId);
                     sendPhoto(textService.getPropValues(Paths.PHOTOS_URLS_PATH, Photos.HELLO_PHOTO_PATH), chatId);
@@ -122,13 +113,13 @@ public class Bot extends TelegramLongPollingBot {
                     break;
                 }
                 default: {
-                    sendMsg("Write admin to get help @yqpuss", chatId);
+                    sendMsg("Техподдержка +375(29)423-98-44", chatId);
                     sendContact(chatId);
                     break;
                 }
             }
         }
-    }
+
 
     private void sendMsgWithPhoto(String message, String url, long chatId) {
         SendMessage sendMessage = new SendMessage();

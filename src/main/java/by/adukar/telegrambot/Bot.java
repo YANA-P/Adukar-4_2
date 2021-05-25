@@ -6,7 +6,6 @@ import by.adukar.telegrambot.consts.Commands;
 import by.adukar.telegrambot.consts.Paths;
 import by.adukar.telegrambot.consts.Photos;
 import by.adukar.telegrambot.consts.Text;
-import by.adukar.telegrambot.enums.Color;
 import by.adukar.telegrambot.service.TextService;
 import by.adukar.telegrambot.service.UserService;
 import by.adukar.telegrambot.sql.Database;
@@ -22,7 +21,7 @@ import org.telegram.telegrambots.exceptions.TelegramApiException;
 import java.util.List;
 
 
-public class Bot extends TelegramLongPollingBot {
+public class Bot {
 
     ReplyButtons replyButtons = new ReplyButtons();
     InlineButtons inlineButtons = new InlineButtons();

@@ -33,7 +33,7 @@ public class ReplyButtons {
 
     }
 
-    public ReplyKeyboardMarkup keyboardMarkup(String text1, String text2) {
+    public ReplyKeyboardMarkup keyboardMarkup(String text1) {
 
         ArrayList<KeyboardRow> keyboard = new ArrayList<>();
         KeyboardRow keyboardFirstRow = new KeyboardRow();
@@ -44,7 +44,6 @@ public class ReplyButtons {
         keyboardMarkup.setOneTimeKeyboard(false);
 
         keyboardFirstRow.add(text1);
-        keyboardFirstRow.add(text2);
 
         keyboard.add(keyboardFirstRow);
         keyboardMarkup.setKeyboard(keyboard);

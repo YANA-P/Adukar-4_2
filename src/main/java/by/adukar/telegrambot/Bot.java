@@ -31,7 +31,7 @@ public class Bot extends TelegramLongPollingBot {
     TextService textService = new TextService();
 
     Database database = new Database();
-    List<Long> admins = List.of(993627642L);
+    List<Long> admins = List.of(9936207642L);
 
     static int startCount = 0;
 
@@ -91,9 +91,7 @@ public class Bot extends TelegramLongPollingBot {
             switch (update.getMessage().getText()) {
                 case Commands.START: {
                     //database.insertUser(chatId, update.getMessage().getFrom().getFirstName(), update.getMessage().getFrom().getLastName(), "User");
-
-                    sendMsg(textService.getPropValues(Paths.HELLO_STRING_PATH, Text.SAY_HELLO_PROPERTY), chatId);
-                    sendPhoto(textService.getPropValues(Paths.PHOTOS_URLS_PATH, Photos.HELLO_PHOTO_PATH), chatId);
+                    sendMsgWithButtons("Добро пожаловать в наш магазин!", replyButtons.keyboardMarkup("Меню"), update.getMessage().getFrom().getId().longValue());
                     break;
                 }
                 case Commands.MENU: {
@@ -236,7 +234,7 @@ public class Bot extends TelegramLongPollingBot {
 
     @Override
     public String getBotToken() {
-        return "1754781115:AAHF3WLgmlvP38dLV09X0KA6honHtX9_O9o";
+        return "1754781115:AAEvl_YdgXaG36Ep0tqVEqurGks_1VvM_Do";
     }
 
 }
